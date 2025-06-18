@@ -1,0 +1,5 @@
+anta_inventory:
+  hosts:
+  - host: 10.85.43.87
+    name: lab-leaf-2b
+    tags: ['leaf','fabric' , 'service-leaf']

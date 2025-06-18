@@ -181,5 +181,9 @@ anta.tests.vlan:
           status: active
         - vlan_id: 207
           status: active
+        - vlan_id: 998
+          status: active
+        - vlan_id: 999
+          status: active
       filters:
         tags: [leaf , spine , service-leaf]

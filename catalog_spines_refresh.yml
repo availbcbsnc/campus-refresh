@@ -1,0 +1,200 @@
+anta.tests.hardware:
+  - VerifyEnvironmentCooling: # Verifies the status of power supply fans and all fan trays.
+      states:
+        - ok
+      filters:
+          tags: [leaf , spine , service-leaf]
+  - VerifyEnvironmentPower: # Verifies the power supplies status
+      states:
+        - ok 
+      filters:
+          tags: [leaf , spine , service-leaf]
+
+anta.tests.interfaces:
+  - VerifyInterfaceErrDisabled: # Verifies there are no interfaces in the errdisabled state.
+        filters:
+          tags: [leaf , spine , service-leaf]
+  - VerifyInterfacesStatus: # Verifies the operational states of specified interfaces to ensure they match expected configurations.
+      interfaces:
+        - name: Ethernet1
+          status: up
+        - name: Port-Channel100
+          status: up
+      filters:
+          tags: [leaf , spine , service-leaf]
+
+anta.tests.mlag:
+  - VerifyMlagConfigSanity: # Verifies there are no MLAG config-sanity inconsistencies.
+        filters:
+          tags: [leaf , spine , service-leaf]
+  - VerifyMlagInterfaces: # Verifies there are no inactive or active-partial MLAG ports.
+        filters:
+          tags: [leaf , spine , service-leaf]
+  - VerifyMlagStatus: # Verifies the health status of the MLAG configuration.
+        filters:
+          tags: [leaf , spine , service-leaf]
+
+anta.tests.routing:
+  bgp:
+    - VerifyBGPSpecificPeers: # Verifies the health of specific BGP peer(s) for given address families.
+        minimum_established_time: 10000
+        address_families:
+          - afi: "ipv4"
+            safi: "unicast"
+            peers:
+              - 172.29.242.4
+              - 172.29.242.12
+              - 172.29.242.20
+              - 172.29.242.28
+              - 172.29.242.36
+              - 172.29.242.44
+        filters:
+          tags: [leaf , spine , service-leaf]
+    - VerifyBgpRouteMaps: # Verifies BGP inbound and outbound route-maps of BGP peers
+        bgp_peers:
+          - interface: vlan 4040
+            vrf: CONFERENCE-AV
+            inbound_route_map: RM-CONFERENCE-AV-ZONE-TO-CONFERENCE-AV-VRF-IN
+            outbound_route_map: RM-CONFERENCE-AV-VRF-TO-CONFERENCE-AV-ZONE-OUT
+          - interface: vlan 4041
+            vrf: BLDG-SEC
+            inbound_route_map: RM-BLDG-SEC-ZONE-TO-BLDG-SEC-VRF-IN
+            outbound_route_map: RM-BLDG-SEC-VRF-TO-BLDG-SEC-ZONE-OUT
+          - interface: vlan 4042
+            vrf: INFRA-MGMT
+            inbound_route_map: RM-INFRA-MGMT-ZONE-TO-INFRA-MGMT-VRF-IN
+            outbound_route_map: RM-INFRA-MGMT-VRF-TO-INFRA-MGMT-ZONE-OUT
+          - interface: vlan 4043
+            vrf: PRINTERS
+            inbound_route_map: RM-PRINTERS-ZONE-TO-PRINTERS-VRF-IN
+            outbound_route_map: RM-PRINTERS-VRF-TO-PRINTERS-ZONE-OUT
+          - interface: vlan 4044
+            vrf: INTERNAL-USER
+            inbound_route_map: RM-INTERNAL-USERS-ZONE-TO-INTERNAL-USERS-VRF-IN
+            outbound_route_map: RM-INTERNAL-USERS-VRF-TO-INTERNAL-USERS-ZONE-OUT
+          - interface: vlan 4045
+            vrf: GUEST-BYOD
+            inbound_route_map: RM-GUEST-BYOD-ZONE-TO-GUEST-BYOD-VRF-IN
+            outbound_route_map: RM-GUEST-BYOD-VRF-TO-GUEST-BYOD-ZONE-OUT
+        filters:
+          tags: [leaf , spine , service-leaf]
+
+anta.tests.services:
+  - VerifyDNSLookup: # Verifies the DNS (Domain Name Service) name to IP address resolution.
+      domain_names:
+        - arista.com
+        - www.google.com
+      filters:
+        tags: [leaf , spine , service-leaf]
+  - VerifyDNSServers: # Verifies if the DNS (Domain Name Service) servers are correctly configured.
+      dns_servers:
+        - server_address: 10.100.193.10
+          vrf: MANAGEMENT
+          priority: 0
+        - server_address: 10.240.24.10
+          vrf: MANAGEMENT
+          priority: 0
+        - server_address: 10.240.30.10
+          vrf: MANAGEMENT
+          priority: 0
+      filters:
+        tags: [leaf , spine , service-leaf]
+
+anta.tests.snmp:
+  - VerifySnmpHostLogging: # Verifies SNMP logging configurations.
+      hosts:
+        - hostname: 10.240.3.164
+          vrf: MANAGEMENT
+        - hostname: 10.240.3.203
+          vrf: MANAGEMENT
+        - hostname: 10.240.3.204
+          vrf: MANAGEMENT
+        - hostname: 10.242.5.212
+          vrf: MANAGEMENT
+        - hostname: 10.242.5.236
+          vrf: MANAGEMENT
+        - hostname: 172.22.10.13
+          vrf: MANAGEMENT
+      filters:
+        tags: [leaf , spine , service-leaf]
+
+anta.tests.stp:
+  - VerifySTPBlockedPorts: # Verifies there is no STP blocked ports.
+        filters:
+          tags: [leaf , spine , service-leaf]
+
+anta.tests.software:
+  - VerifyEOSVersion: # Verifies the device is running one of the allowed EOS version.
+      versions: # List of allowed EOS versions.
+        - 4.32.4M
+      filters:
+        tags: [leaf , spine , service-leaf]        
+  - VerifyTerminAttrVersion: # List of allowed TerminAttr versions.
+      versions:
+        - v1.34.3
+      filters:
+        tags: [leaf , spine , service-leaf]
+
+anta.tests.system:
+  - VerifyCPUUtilization: # Verifies whether the CPU utilization is below 75%.
+      filters:
+          tags: [leaf , spine , service-leaf]
+  - VerifyCoredump: # Verifies there are no core dump files.
+      filters:
+          tags: [leaf , spine , service-leaf]
+  - VerifyFileSystemUtilization: # Verifies that no partition is utilizing more than 75% of its disk space.
+      filters:
+          tags: [leaf , spine , service-leaf]
+  - VerifyMaintenance: # Verifies that the device is not currently under or entering maintenance.
+      filters:
+          tags: [leaf , spine , service-leaf]
+  - VerifyMemoryUtilization: # Verifies whether the memory utilization is below 75%.
+      filters:
+          tags: [leaf , spine , service-leaf]
+  - VerifyNTP: # Verifies if NTP is synchronised.
+      filters:
+          tags: [leaf , spine , service-leaf]
+
+anta.tests.vlan:
+  - VerifyVlanInternalPolicy:
+      policy: ascending
+      start_vlan_id: 1000
+      end_vlan_id: 1050
+      filters:
+        tags: [leaf , spine , service-leaf]
+  - VerifyVlanStatus: # Verifies the administrative status of specified VLANs.
+      vlans:
+        - vlan_id: 4040
+          status: active
+        - vlan_id: 4041
+          status: active
+        - vlan_id: 4042
+          status: active
+        - vlan_id: 4043
+          status: active
+        - vlan_id: 4044
+          status: active
+        - vlan_id: 4045
+          status: active
+        - vlan_id: 200
+          status: active
+        - vlan_id: 201
+          status: active
+        - vlan_id: 202
+          status: active
+        - vlan_id: 203
+          status: active
+        - vlan_id: 204
+          status: active
+        - vlan_id: 205
+          status: active
+        - vlan_id: 206
+          status: active
+        - vlan_id: 207
+          status: active
+        - vlan_id: 998
+          status: active
+        - vlan_id: 999
+          status: active
+      filters:
+        tags: [leaf , spine , service-leaf]

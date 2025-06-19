@@ -23,7 +23,6 @@ anta.tests.interfaces:
       filters:
           tags: [leaf , spine , service-leaf]
 
-
 anta.tests.mlag:
   - VerifyMlagConfigSanity: # Verifies there are no MLAG config-sanity inconsistencies.
         filters:
